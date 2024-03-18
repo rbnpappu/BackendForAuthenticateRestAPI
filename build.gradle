@@ -22,17 +22,22 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-devtools'
-    
+ 
+
     // Jakarta Validation and Hibernate Validator
     implementation 'jakarta.validation:jakarta.validation-api:3.0.0'
     implementation 'org.hibernate.validator:hibernate-validator:7.0.2.Final'
     
-      implementation 'org.springframework.boot:spring-boot-starter-security'
+    // Spring Boot Configuration Processor
+    implementation 'org.springframework.boot:spring-boot-configuration-processor'
+    
+    // Spring Boot OAuth2 Resource Server
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    
     // MySQL Connector
     implementation 'mysql:mysql-connector-java:8.0.28'
     
-    // Lombok for compile time annotations
+    // Lombok for compile-time annotations
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     
@@ -46,6 +51,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 }
+
 
 
 tasks.named('test') {
