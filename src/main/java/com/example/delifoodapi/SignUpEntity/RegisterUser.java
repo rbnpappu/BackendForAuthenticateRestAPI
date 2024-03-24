@@ -1,81 +1,59 @@
 package com.example.delifoodapi.SignUpEntity;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
+import lombok.*;
+import jakarta.persistence.*;
+import java.util.Set;
 
 @Entity
-@Table(name="users")
-public class RegisterUser  {
+@Table(name = "users")
+@Getter
+@Setter
+@NoArgsConstructor
+public class RegisterUser {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id", nullable = false)
     private Long id;
-    
-    @Column(name="userName")
+
+    @Column(name = "user_name", nullable = false, unique = true)
     private String userName;
-    
-    @Column(name="password")
+
+    @Column(name = "password", nullable = false)
     private String password;
-    
-    @Column(name="retypePassword")
-    private String retypePassword;
-    
-    @Column(name="roles")
-    private String roles;
+
+    @Column(name = "retype_password")
+    private String retypePassword; // Not stored in the database
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+        name = "user_role",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<RegisterUserRole> roles;
 
     public RegisterUser() {
-        // Default constructor required by JPA
+        // Default constructor body (if needed)
     }
 
-    public RegisterUser(String userName, String password, String retypePassword, String roles) {
-        this.userName = userName;
-        this.password = password;
-        this.retypePassword = retypePassword;
-        this.roles = roles;
-    }
-
-    // Getter and setter methods for all fields
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @Override
-    public String toString() {
-        return "RegisterUser{" +
-                "id=" + id +
-                ", userName='" + userName + '\'' +
-                ", password='" + password + '\'' +
-                ", retypePassword='" + retypePassword + '\'' +
-                ", roles='" + roles + '\'' +
-                '}';
-    }
-
-	public RegisterUser(Long id, String userName, String password, String retypePassword, String roles) {
+    
+    
+	public RegisterUser(Long id, String userName, String password, String retypePassword, Set<RegisterUserRole> roles) {
 		super();
 		this.id = id;
 		this.userName = userName;
 		this.password = password;
 		this.retypePassword = retypePassword;
 		this.roles = roles;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getUserName() {
@@ -102,12 +80,14 @@ public class RegisterUser  {
 		this.retypePassword = retypePassword;
 	}
 
-	public String getRoles() {
+	public Set<RegisterUserRole> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(String roles) {
+	public void setRoles(Set<RegisterUserRole> roles) {
 		this.roles = roles;
 	}
 
+    
+    
 }

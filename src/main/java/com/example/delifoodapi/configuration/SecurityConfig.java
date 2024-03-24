@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -72,9 +73,9 @@ public class SecurityConfig {
 	        http
 	            .csrf().disable()
 	            .authorizeRequests(authorize -> authorize.requestMatchers("/RegisterUser","/RegisterAdminUser").permitAll().anyRequest().authenticated())
+	      
 	            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-	            .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
-
+	        
 	            .exceptionHandling(exceptionHandling ->
 	                    exceptionHandling.authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
 	                            .accessDeniedHandler(new BearerTokenAccessDeniedHandler()))
@@ -98,8 +99,10 @@ public class SecurityConfig {
 			
 				.authorizeHttpRequests(auth -> 
 				
-				auth.anyRequest().authenticated()
-				)
+				auth
+				.requestMatchers("/user").hasRole("user")
+				.anyRequest().authenticated()
+				)      
 				
 				
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -141,4 +144,10 @@ public class SecurityConfig {
     	return NoOpPasswordEncoder.getInstance();
     }
 
+    @Bean
+    public RoleVoter roleVoter() {
+        RoleVoter roleVoter = new RoleVoter();
+        roleVoter.setRolePrefix(""); // Remove the ROLE_ prefix
+        return roleVoter;
+    }
 }

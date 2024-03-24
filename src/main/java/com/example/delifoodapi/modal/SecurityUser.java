@@ -1,21 +1,15 @@
 package com.example.delifoodapi.modal;
 
-import java.util.Arrays;
-import java.util.Collection;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.example.delifoodapi.SignUpEntity.RegisterUser;
+import com.example.delifoodapi.SignUpEntity.RegisterUserRole;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SecurityUser implements UserDetails {
 
@@ -37,11 +31,13 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays.stream(user
-                .getRoles()
-                .split(","))
-                .map(SimpleGrantedAuthority::new)
-                .toList();
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+
+        user.getRoles().forEach(role -> {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleName()));
+        });
+
+        return authorities;
     }
 
     @Override
@@ -64,4 +60,3 @@ public class SecurityUser implements UserDetails {
         return true;
     }
 }
-
